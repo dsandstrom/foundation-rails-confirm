@@ -1,65 +1,56 @@
-$.fn.twitter_bootstrap_confirmbox =
+$.fn.foundation_confirmbox =
   defaults:
     title: null
     proceed: "OK"
-    proceed_class: "btn proceed"
+    proceed_class: "button tiny right"
     cancel: "Cancel"
-    cancel_class: "btn cancel"
+    cancel_class: "button secondary tiny"
     fade: false
 
-TwitterBootstrapConfirmBox = (message, element, callback) ->
+FoundationConfirmBox = (message, element, callback) ->
   $dialog = $('
-    <div class="modal hide" id="confirmation_dialog">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3>...</h3>
-      </div>
-      <div class="modal-body"></div>
-      <div class="modal-footer"></div>
+    <div class="reveal-modal small" id="confirmation_dialog" data-reveal>
+      <h4 class="title"></h4>
+      <p class="body"></p>
+      <div class="footer"></div>
+      <a class="close-reveal-modal">&#215;</a>
     </div>
   ')
 
-  $dialog.addClass("fade") if element.data("confirm-fade") || $.fn.twitter_bootstrap_confirmbox.defaults.fade
-
   $dialog
-    .find(".modal-header")
-      .find("h3")
-        .html(element.data("confirm-title") || $.fn.twitter_bootstrap_confirmbox.defaults.title || window.top.location.origin)
-      .end()
+    .find(".title")
+      .html(element.data("confirm-title") || $.fn.foundation_confirmbox.defaults.title || window.top.location.origin)
     .end()
 
-    .find(".modal-body")
+    .find(".body")
       .html(message.replace(/\n/g, "<br />"))
     .end()
 
-    .find(".modal-footer")
+    .find(".footer")
       .append(
-        $("<a />", {href: "#", "data-dismiss": "modal"})
-          .html(element.data("confirm-cancel") || $.fn.twitter_bootstrap_confirmbox.defaults.cancel)
-          .addClass($.fn.twitter_bootstrap_confirmbox.defaults.cancel_class)
+        $("<a />", {href: "#"})
+          .html(element.data("confirm-cancel") || $.fn.foundation_confirmbox.defaults.cancel)
+          .addClass($.fn.foundation_confirmbox.defaults.cancel_class)
           .addClass(element.data("confirm-cancel-class"))
           .click((event) ->
             event.preventDefault()
-            $dialog.modal("hide")
+            $dialog.foundation('reveal', 'close').remove()
+            false
           )
         ,
         $("<a />", {href: "#"})
-          .html(element.data("confirm-proceed") || $.fn.twitter_bootstrap_confirmbox.defaults.proceed)
-          .addClass($.fn.twitter_bootstrap_confirmbox.defaults.proceed_class)
+          .html(element.data("confirm-proceed") || $.fn.foundation_confirmbox.defaults.proceed)
+          .addClass($.fn.foundation_confirmbox.defaults.proceed_class)
           .addClass(element.data("confirm-proceed-class") || "btn-primary")
           .click((event) ->
             event.preventDefault()
-            $dialog.modal("hide")
+            $dialog.foundation('reveal', 'close')
             callback()
           )
       )
     .end()
-
-    .on("hidden", -> $(this).remove())
-
-    .modal("show")
-
     .appendTo(document.body)
+    .foundation('reveal', 'open')
 
 $.rails.allowAction = (element) ->
   message = element.data("confirm")
@@ -67,7 +58,7 @@ $.rails.allowAction = (element) ->
   return true unless message
 
   if $.rails.fire(element, "confirm")
-    TwitterBootstrapConfirmBox message, element, ->
+    FoundationConfirmBox message, element, ->
       if $.rails.fire(element, "confirm:complete", [answer])
         allowAction = $.rails.allowAction
 
