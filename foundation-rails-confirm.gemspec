@@ -4,7 +4,7 @@ require File.expand_path('../lib/foundation/rails/confirm/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Mikko Kokkonen"]
   gem.email         = ["mikko@mikian.com"]
-  gem.description   = %q{Confirm dialogs using ZRUB Foundation}
+  gem.description   = %q{Confirm dialogs using Zurb Foundation}
   gem.summary       = %q{Applies a custom confirm dialog for elements with a data-confirm attribute.}
   gem.homepage      = "https://github.com/mikian/foundation-rails-confirm"
 
